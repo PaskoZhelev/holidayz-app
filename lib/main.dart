@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: darkTheme,
+        theme: customDarkTheme1,
         home: HomePage(),
       ),
     );

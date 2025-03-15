@@ -30,6 +30,55 @@ var darkTheme = ThemeData.dark().copyWith(
   ),
     );
 
+final ThemeData customDarkTheme1 = ThemeData(
+  brightness: Brightness.dark,
+  primaryColor: Colors.tealAccent, // Accent color
+  scaffoldBackgroundColor: Color(0xFF121212), // Deep dark background
+  cardColor: Color(0xFF1E1E1E), // Dark card color
+  appBarTheme: AppBarTheme(
+    backgroundColor: Color(0xFF1E1E1E),
+    elevation: 0,
+    iconTheme: IconThemeData(color: Colors.tealAccent),
+  ),
+  iconTheme: IconThemeData(color: Colors.tealAccent),
+  textTheme: TextThemeColor.nullFontColor(MAIN_TEXT_THEME),
+  primaryTextTheme: TextThemeColor.nullFontColor(MAIN_TEXT_THEME),
+  buttonTheme: ButtonThemeData(
+    buttonColor: Colors.tealAccent,
+    textTheme: ButtonTextTheme.primary,
+  ),
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.tealAccent,
+      foregroundColor: Colors.black,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+    ),
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    filled: true,
+    fillColor: Color(0xFF1E1E1E),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: Colors.tealAccent),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: Colors.grey),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(10),
+      borderSide: BorderSide(color: Colors.tealAccent, width: 2),
+    ),
+    labelStyle: TextStyle(color: Colors.grey[400]),
+  ),
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    backgroundColor: Color(0xFF1E1E1E),
+    selectedItemColor: Colors.tealAccent,
+    unselectedItemColor: Colors.grey[600],
+  ),
+);
+
 var TEAL_COLOR = Colors.teal;
 var DARK_COLOR = const Color(0xFF282828);
 

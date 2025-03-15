@@ -69,38 +69,41 @@ class _HomePageState extends State<HomePage> {
   Widget buildCalendar() {
     return Consumer<HolidayProvider>(
         builder: (context, provider, child) {
-          return GridView.count(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            crossAxisCount: 3,
-            childAspectRatio: 1 / 1.17,
-            children: List.generate(12, (index) {
-              int month = index + 1;
-              return Padding(
-                padding: EdgeInsets.all(3),
-                child: Column(
-                  children: [
-                    Container(
-                      padding: EdgeInsets.all(4),
-                      child: Text(
-                        monthName(month),
-                        style: TextStyle(fontSize: 12, fontWeight: FontWeight
-                            .bold),
+          return Padding(
+            padding: EdgeInsets.all(3),
+            child: GridView.count(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              crossAxisCount: 3,
+              childAspectRatio: 1 / 1.17,
+              children: List.generate(12, (index) {
+                int month = index + 1;
+                return Padding(
+                  padding: EdgeInsets.all(3),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(4),
+                        child: Text(
+                          monthName(month),
+                          style: TextStyle(fontSize: 12, fontWeight: FontWeight
+                              .bold),
+                        ),
                       ),
-                    ),
-                    Expanded(
-                      child: MonthCalendar(
-                        year: provider.selectedYear,
-                        month: month,
-                        holidays: provider.holidays
-                            .where((h) => h.date.month == month)
-                            .toList(),
+                      Expanded(
+                        child: MonthCalendar(
+                          year: provider.selectedYear,
+                          month: month,
+                          holidays: provider.holidays
+                              .where((h) => h.date.month == month)
+                              .toList(),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            }),
+                    ],
+                  ),
+                );
+              }),
+            ),
           );
         }
     );
@@ -190,6 +193,7 @@ class _HomePageState extends State<HomePage> {
                             value: provider.selectedCountryCode,
                             isExpanded: true,
                             underline: SizedBox(),
+                            icon: Icon(Icons.arrow_drop_down, color: Colors.tealAccent),
                             items: provider.countries
                                 .map((country) =>
                                 DropdownMenuItem<String>(
@@ -221,6 +225,7 @@ class _HomePageState extends State<HomePage> {
                               value: provider.selectedRegionCode,
                               isExpanded: true,
                               underline: SizedBox(),
+                              icon: Icon(Icons.arrow_drop_down, color: Colors.tealAccent),
                               items: provider.regions
                                   .map((region) =>
                                   DropdownMenuItem<String>(
@@ -245,8 +250,8 @@ class _HomePageState extends State<HomePage> {
               // --- Calendar Grid ---
               buildCalendar(),
               // --- Summary Section ---
-              Text("Total Holidays: $totalHolidays"),
-              Text("Holidays on weekend: $weekendHolidays"),
+              Text("Public Holidays: $totalHolidays"),
+              Text("Public Holidays on weekend: $weekendHolidays"),
               SizedBox(height: 16),
               // --- List of Holiday Cards ---
               HolidayList(holidays: provider.holidays)
@@ -348,9 +353,12 @@ class _MonthCalendarState extends State<MonthCalendar> {
       dayCount++;
     }
 
+    DateTime now = DateTime.now();
+    DateTime today = DateTime(now.year, now.month, now.day);
     // Day cells.
     for (int day = 1; day <= daysInMonth; day++) {
       DateTime date = DateTime(widget.year, widget.month, day);
+      bool isToday = date.year == today.year && date.month == today.month && date.day == today.day;
       bool isHoliday = widget.holidays.any((holiday) =>
       holiday.date.year == date.year &&
           holiday.date.month == date.month &&
@@ -382,7 +390,11 @@ class _MonthCalendarState extends State<MonthCalendar> {
         margin: EdgeInsets.all(1),
         decoration: BoxDecoration(
           color: isHoliday ? Colors.red.withValues(alpha: 0.8) : backgroundColor,
-          borderRadius: BorderRadius.circular(isHoliday ? 10 : 0),
+          borderRadius: BorderRadius.circular(isHoliday || isToday ? 10 : 0),
+          border: isToday ? Border.all(
+            color: Colors.orange, // Change to any color you want
+            width: 1, // Set border width (small)
+          ) : null,
         ),
         alignment: Alignment.center,
         child: Text(
@@ -426,50 +438,57 @@ class HolidayList extends StatelessWidget {
     List<int> sortedMonths = groupedHolidays.keys.toList()
       ..sort((a, b) => a.compareTo(b));
 
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemCount: groupedHolidays.length,
-      itemBuilder: (context, index) {
-        int month = sortedMonths[index];
-        String monthName = DateFormat('MMMM').format(DateTime(0, month));
-        List<Holiday> holidaysForMonth = groupedHolidays[month]!;
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListView.builder(
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        itemCount: groupedHolidays.length,
+        itemBuilder: (context, index) {
+          int month = sortedMonths[index];
+          String monthName = DateFormat('MMMM').format(DateTime(0, month));
+          List<Holiday> holidaysForMonth = groupedHolidays[month]!;
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Month Header
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
-              child: Text(
-                monthName,
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Month Header
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                child: Text(
+                  monthName,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-            // Holidays for the month
-            ...holidaysForMonth.map((holiday) {
-              return Card(
-                margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-                child: ListTile(
-                  title: Text(holiday.englishName, style: TextStyle(fontSize: 14)),
-                  subtitle: Text(
-                    holiday.localName,
-                    style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+              // Holidays for the month
+              ...holidaysForMonth.map((holiday) {
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                  child: ListTile(
+                    title: Text(holiday.englishName, style: TextStyle(fontSize: 14)),
+                    subtitle: Text(
+                      holiday.localName,
+                      style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                    ),
+                    trailing: Text('${formatDateSimple(holiday.date)}'),
                   ),
-                  trailing: Text('${formatDate(holiday.date)}'),
-                ),
-              );
-            }).toList(),
-          ],
-        );
-      },
+                );
+              }).toList(),
+            ],
+          );
+        },
+      ),
     );
   }
 
   String formatDate(DateTime date) {
     return DateFormat('dd MMM yyyy').format(date);
+  }
+
+  String formatDateSimple(DateTime date) {
+    return DateFormat('d MMM').format(date);
   }
 }

@@ -28,19 +28,29 @@ class _HomePageState extends State<HomePage> {
     var selectedRegion = prefs.getString('selectedRegion');
     print(selectedCountry);
     print(selectedRegion);
-    if(selectedCountry != null && selectedRegion != null)
-    {
-      Provider.of<HolidayProvider>(context, listen: false).setCountryCode(selectedCountry);
-      Provider.of<HolidayProvider>(context, listen: false).setRegion(selectedRegion);
+    if (selectedCountry != null && selectedRegion != null) {
+      Provider.of<HolidayProvider>(
+        context,
+        listen: false,
+      ).setCountryCode(selectedCountry);
+      Provider.of<HolidayProvider>(
+        context,
+        listen: false,
+      ).setRegion(selectedRegion);
     }
 
     await Provider.of<HolidayProvider>(context, listen: false).init();
-
   }
 
   Future<void> _savePreferences() async {
-    await prefs.setString('selectedCountry', Provider.of<HolidayProvider>(context, listen: false).selectedCountryCode);
-    await prefs.setString('selectedRegion', Provider.of<HolidayProvider>(context, listen: false).selectedRegionCode);
+    await prefs.setString(
+      'selectedCountry',
+      Provider.of<HolidayProvider>(context, listen: false).selectedCountryCode,
+    );
+    await prefs.setString(
+      'selectedRegion',
+      Provider.of<HolidayProvider>(context, listen: false).selectedRegionCode,
+    );
   }
 
   // Dummy method to load holidays.
@@ -59,53 +69,61 @@ class _HomePageState extends State<HomePage> {
   }
 
   // Summary stats.
-  int get totalHolidays => Provider.of<HolidayProvider>(context, listen: false).holidays.length;
-  int get weekendHolidays => Provider.of<HolidayProvider>(context, listen: false).holidays.where((holiday) {
-    int wd = holiday.date.weekday;
-    return wd == DateTime.saturday || wd == DateTime.sunday;
-  }).length;
+  int get totalHolidays =>
+      Provider.of<HolidayProvider>(context, listen: false).holidays.length;
+
+  int get weekendHolidays =>
+      Provider.of<HolidayProvider>(context, listen: false).holidays.where((
+        holiday,
+      ) {
+        int wd = holiday.date.weekday;
+        return wd == DateTime.saturday || wd == DateTime.sunday;
+      }).length;
 
   // Builds the calendar grid showing all 12 months (3 per row).
   Widget buildCalendar() {
     return Consumer<HolidayProvider>(
-        builder: (context, provider, child) {
-          return Padding(
-            padding: EdgeInsets.all(3),
-            child: GridView.count(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              crossAxisCount: 3,
-              childAspectRatio: 1 / 1.17,
-              children: List.generate(12, (index) {
-                int month = index + 1;
-                return Padding(
-                  padding: EdgeInsets.all(3),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(4),
-                        child: Text(
-                          monthName(month),
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight
-                              .bold),
+      builder: (context, provider, child) {
+        return Padding(
+          padding: EdgeInsets.all(3),
+          child: GridView.count(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            crossAxisCount: 3,
+            childAspectRatio: 1 / 1.17,
+            children: List.generate(12, (index) {
+              int month = index + 1;
+              return Padding(
+                padding: EdgeInsets.all(3),
+                child: Column(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(4),
+                      child: Text(
+                        monthName(month),
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Expanded(
-                        child: MonthCalendar(
-                          year: provider.selectedYear,
-                          month: month,
-                          holidays: provider.holidays
-                              .where((h) => h.date.month == month)
-                              .toList(),
-                        ),
+                    ),
+                    Expanded(
+                      child: MonthCalendar(
+                        year: provider.selectedYear,
+                        month: month,
+                        holidays:
+                            provider.holidays
+                                .where((h) => h.date.month == month)
+                                .toList(),
                       ),
-                    ],
-                  ),
-                );
-              }),
-            ),
-          );
-        }
+                    ),
+                  ],
+                ),
+              );
+            }),
+          ),
+        );
+      },
     );
   }
 
@@ -124,7 +142,7 @@ class _HomePageState extends State<HomePage> {
       "September",
       "October",
       "November",
-      "December"
+      "December",
     ];
     return months[month];
   }
@@ -143,100 +161,85 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<HolidayProvider>(
-        builder: (context, provider, child)
-    {
-
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("Holiday Calendar"),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              // --- Top Controls ---
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    // Year selector with arrows
-                    Column(
-                      children: [
-                        Text('Year', style: TextStyle(
-                            fontSize: 12, color: Colors.grey[600])),
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.arrow_left),
-                              onPressed: _decrementYear,
-                            ),
-                            Text("${provider.selectedYear}",
-                                style: TextStyle(
-                                    fontSize: 15, fontWeight: FontWeight.bold)),
-                            IconButton(
-                              icon: Icon(Icons.arrow_right),
-                              onPressed: _incrementYear,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(width: 10),
-
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+      builder: (context, provider, child) {
+        return Scaffold(
+          appBar: AppBar(title: Text("Holiday Calendar")),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                // --- Top Controls ---
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Year selector with arrows
+                      Column(
                         children: [
-                          Text('Country', style: TextStyle(fontSize: 12,
-                              color: Colors.grey[600])),
-                          DropdownButton<String>(
-                            value: provider.selectedCountryCode,
-                            isExpanded: true,
-                            underline: SizedBox(),
-                            icon: Icon(Icons.arrow_drop_down, color: Colors.tealAccent),
-                            items: provider.countries
-                                .map((country) =>
-                                DropdownMenuItem<String>(
-                                  value: country.abbreviation,
-                                  child: Text(country.name,
-                                      style: TextStyle(fontSize: 13)),
-                                ))
-                                .toList(),
-                            onChanged: (value) async {
-                              if (value != null) {
-                                await provider.setCountry(value);
-                                _savePreferences();
-                              }
-                            },
+                          Text(
+                            'Year',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.arrow_left),
+                                onPressed: _decrementYear,
+                              ),
+                              Text(
+                                "${provider.selectedYear}",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.arrow_right),
+                                onPressed: _incrementYear,
+                              ),
+                            ],
                           ),
                         ],
                       ),
-                    ),
+                      SizedBox(width: 10),
 
-                    SizedBox(width: 16),
-                    if (provider.showRegionSelector)
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Region', style: TextStyle(fontSize: 12,
-                                color: Colors.grey[600])),
+                            Text(
+                              'Country',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                              ),
+                            ),
                             DropdownButton<String>(
-                              value: provider.selectedRegionCode,
+                              value: provider.selectedCountryCode,
                               isExpanded: true,
                               underline: SizedBox(),
-                              icon: Icon(Icons.arrow_drop_down, color: Colors.tealAccent),
-                              items: provider.regions
-                                  .map((region) =>
-                                  DropdownMenuItem<String>(
-                                    value: region.abbreviation,
-                                    child: Text(region.name,
-                                        style: TextStyle(fontSize: 13)),
-                                  ))
-                                  .toList(),
-                              onChanged: (value) {
+                              icon: Icon(
+                                Icons.arrow_drop_down,
+                                color: Colors.tealAccent,
+                              ),
+                              items:
+                                  provider.countries
+                                      .map(
+                                        (country) => DropdownMenuItem<String>(
+                                          value: country.abbreviation,
+                                          child: Text(
+                                            country.name,
+                                            style: TextStyle(fontSize: 13),
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                              onChanged: (value) async {
                                 if (value != null) {
-                                  provider.setRegion(value);
+                                  await provider.setCountry(value);
                                   _savePreferences();
                                 }
                               },
@@ -244,22 +247,67 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
-                  ],
+
+                      SizedBox(width: 16),
+                      if (provider.showRegionSelector)
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Region',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                              DropdownButton<String>(
+                                value: provider.selectedRegionCode,
+                                isExpanded: true,
+                                underline: SizedBox(),
+                                icon: Icon(
+                                  Icons.arrow_drop_down,
+                                  color: Colors.tealAccent,
+                                ),
+                                items:
+                                    provider.regions
+                                        .map(
+                                          (region) => DropdownMenuItem<String>(
+                                            value: region.abbreviation,
+                                            child: Text(
+                                              region.name,
+                                              style: TextStyle(fontSize: 13),
+                                            ),
+                                          ),
+                                        )
+                                        .toList(),
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    provider.setRegion(value);
+                                    _savePreferences();
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
-              // --- Calendar Grid ---
-              buildCalendar(),
-              // --- Summary Section ---
-              Text("Public Holidays: $totalHolidays"),
-              Text("Public Holidays on weekend: $weekendHolidays"),
-              SizedBox(height: 16),
-              // --- List of Holiday Cards ---
-              HolidayList(holidays: provider.holidays)
-            ],
+                // --- Calendar Grid ---
+                buildCalendar(),
+                // --- Summary Section ---
+                Text("Total Holidays: $totalHolidays"),
+                Text("Holidays on weekend: $weekendHolidays"),
+                SizedBox(height: 16),
+                // --- List of Holiday Cards ---
+                HolidayList(holidays: provider.holidays),
+              ],
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 }
 
@@ -269,9 +317,11 @@ class MonthCalendar extends StatefulWidget {
   final int month;
   final List<Holiday> holidays;
 
-
-  MonthCalendar(
-      {required this.year, required this.month, required this.holidays});
+  MonthCalendar({
+    required this.year,
+    required this.month,
+    required this.holidays,
+  });
 
   @override
   State<MonthCalendar> createState() => _MonthCalendarState();
@@ -299,49 +349,66 @@ class _MonthCalendarState extends State<MonthCalendar> {
     DateTime firstDayOfMonth = DateTime(widget.year, widget.month, 1);
     // Calculate leading empty cells. Weekdays in Dart: Monday=1 ... Sunday=7.
     int firstWeekday = firstDayOfMonth.weekday;
-    int leadingEmptyCells = (firstWeekday + 6) % 7; // Adjust to make Monday first.
+    int leadingEmptyCells =
+        (firstWeekday + 6) % 7; // Adjust to make Monday first.
     int daysInMonth = DateTime(widget.year, widget.month + 1, 0).day;
 
     List<Widget> cells = [];
 
-    if(showCalendarWeek)
-    {
+    if (showCalendarWeek) {
       // week number header
-      cells.add(Container(
-        alignment: Alignment.center,
-        child: Text('CW',
+      cells.add(
+        Container(
+          alignment: Alignment.center,
+          child: Text(
+            'CW',
             style: TextStyle(
-                color: Colors.white.withAlpha(127),
-                fontWeight: FontWeight.bold,
-                fontSize: calendarWeekTextSize)),
-      ));
+              color: Colors.white.withAlpha(127),
+              fontWeight: FontWeight.bold,
+              fontSize: calendarWeekTextSize,
+            ),
+          ),
+        ),
+      );
     }
 
     // Weekday header row.
     List<String> weekdays = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
     for (String wd in weekdays) {
-      cells.add(Container(
-        alignment: Alignment.center,
-        child: Text(wd,
-            style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontWeight: FontWeight.bold, fontSize: weekdayTextSize)),
-      ));
+      cells.add(
+        Container(
+          alignment: Alignment.center,
+          child: Text(
+            wd,
+            style: TextStyle(
+              color: Colors.white.withValues(alpha: 0.5),
+              fontWeight: FontWeight.bold,
+              fontSize: weekdayTextSize,
+            ),
+          ),
+        ),
+      );
     }
 
     // Current date for week number calculation
-    DateTime currentDate = firstDayOfMonth.subtract(Duration(days: leadingEmptyCells));
+    DateTime currentDate = firstDayOfMonth.subtract(
+      Duration(days: leadingEmptyCells),
+    );
 
-    if(showCalendarWeek)
-    {
+    if (showCalendarWeek) {
       // Week number for the first row
-      cells.add(Container(
-        alignment: Alignment.center,
-        child: Text(
-          '${getWeekNumber(currentDate)}',
-          style: TextStyle(
+      cells.add(
+        Container(
+          alignment: Alignment.center,
+          child: Text(
+            '${getWeekNumber(currentDate)}',
+            style: TextStyle(
               color: Colors.white.withAlpha(127),
-              fontSize: calendarWeekTextSize),
+              fontSize: calendarWeekTextSize,
+            ),
+          ),
         ),
-      ));
+      );
     }
 
     int currentWeek = getWeekNumber(currentDate);
@@ -358,43 +425,66 @@ class _MonthCalendarState extends State<MonthCalendar> {
     // Day cells.
     for (int day = 1; day <= daysInMonth; day++) {
       DateTime date = DateTime(widget.year, widget.month, day);
-      bool isToday = date.year == today.year && date.month == today.month && date.day == today.day;
-      bool isHoliday = widget.holidays.any((holiday) =>
-      holiday.date.year == date.year &&
-          holiday.date.month == date.month &&
-          holiday.date.day == date.day);
+      bool isToday =
+          date.year == today.year &&
+          date.month == today.month &&
+          date.day == today.day;
+      bool isHoliday = widget.holidays.any(
+        (holiday) =>
+            holiday.date.year == date.year &&
+            holiday.date.month == date.month &&
+            holiday.date.day == date.day,
+      );
       // Highlight weekends: Saturday and Sunday.
-      bool isWeekend = date.weekday == DateTime.saturday ||
-          date.weekday == DateTime.sunday;
+      bool isWeekend =
+          date.weekday == DateTime.saturday || date.weekday == DateTime.sunday;
       Color backgroundColor =
-      isWeekend ? Colors.red.withValues(alpha: 0.15) : Colors.transparent;
+          isWeekend ? Colors.red.withValues(alpha: 0.15) : Colors.transparent;
+      final Holiday? holiday = widget.holidays.firstWhere(
+            (holiday) =>
+        holiday.date.year == date.year &&
+            holiday.date.month == date.month &&
+            holiday.date.day == date.day,
+        orElse: () => Holiday(id: 0, localName: "No Holiday", englishName: "No Holiday", date: DateTime.now(), global: true, types: "NoType", countryId: 0)
+      );
+      bool isPublic =
+          isHoliday && RegExp(
+            r'\b' + RegExp.escape("Public") + r'\b',
+            caseSensitive: false,
+          ).hasMatch(holiday!.types);
 
-      if(showCalendarWeek)
-      {
+      if (showCalendarWeek) {
         // Add week number at the start of each new week
         if (dayCount > 0 && date.weekday == DateTime.monday) {
           currentWeek = getWeekNumber(date);
-          cells.add(Container(
-            alignment: Alignment.center,
-            child: Text(
-              '$currentWeek',
-              style: TextStyle(
+          cells.add(
+            Container(
+              alignment: Alignment.center,
+              child: Text(
+                '$currentWeek',
+                style: TextStyle(
                   color: Colors.white.withAlpha(127),
-                  fontSize: calendarWeekTextSize),
+                  fontSize: calendarWeekTextSize,
+                ),
+              ),
             ),
-          ));
+          );
         }
       }
 
       Widget dayWidget = Container(
         margin: EdgeInsets.all(1),
         decoration: BoxDecoration(
-          color: isHoliday ? Colors.red.withValues(alpha: 0.8) : backgroundColor,
+          color:
+              isHoliday ? isPublic ? Colors.red.withValues(alpha: 0.8) : Colors.orange.withValues(alpha: 0.45) : backgroundColor,
           borderRadius: BorderRadius.circular(isHoliday || isToday ? 10 : 0),
-          border: isToday ? Border.all(
-            color: Colors.orange, // Change to any color you want
-            width: 1, // Set border width (small)
-          ) : null,
+          border:
+              isToday
+                  ? Border.all(
+                    color: Colors.orange, // Change to any color you want
+                    width: 1, // Set border width (small)
+                  )
+                  : null,
         ),
         alignment: Alignment.center,
         child: Text(
@@ -435,8 +525,8 @@ class HolidayList extends StatelessWidget {
     }
 
     // Sort months
-    List<int> sortedMonths = groupedHolidays.keys.toList()
-      ..sort((a, b) => a.compareTo(b));
+    List<int> sortedMonths =
+        groupedHolidays.keys.toList()..sort((a, b) => a.compareTo(b));
 
     return Padding(
       padding: const EdgeInsets.all(8.0),
@@ -454,13 +544,13 @@ class HolidayList extends StatelessWidget {
             children: [
               // Month Header
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8.0,
+                  horizontal: 16,
+                ),
                 child: Text(
                   monthName,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
               ),
               // Holidays for the month
@@ -468,10 +558,22 @@ class HolidayList extends StatelessWidget {
                 return Card(
                   margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
                   child: ListTile(
-                    title: Text(holiday.englishName, style: TextStyle(fontSize: 14)),
-                    subtitle: Text(
-                      holiday.localName,
-                      style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                    title: Text(
+                      holiday.englishName,
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          holiday.localName,
+                          style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                        ),
+                        Text(
+                          holiday.types,
+                          style: TextStyle(fontSize: 12, color: Colors.grey[600], fontStyle: FontStyle.italic),
+                        ),
+                      ],
                     ),
                     trailing: Text('${formatDateSimple(holiday.date)}'),
                   ),

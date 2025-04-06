@@ -575,7 +575,7 @@ class HolidayList extends StatelessWidget {
                         ),
                       ],
                     ),
-                    trailing: Text('${formatDateSimple(holiday.date)}'),
+                    trailing: Text('${formatDateSimple(holiday.date)}', style: TextStyle(color: holiday.date.isBefore(DateTime.now()) ? Colors.red : Colors.green)),
                   ),
                 );
               }).toList(),

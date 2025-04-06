@@ -2,10 +2,12 @@ import 'package:Holidayz/pages/home_page.dart';
 import 'package:Holidayz/provider/holiday_provider.dart';
 import 'package:Holidayz/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 
 void main() {
+  GoogleFonts.config.allowRuntimeFetching = false;
   runApp(const MyApp());
 }
 

@@ -10,12 +10,12 @@ const DB_VERSION = 1;
 const MIN_YEAR = 2024;
 const MAX_YEAR = 2050;
 
-var RAILEWAY_FONT = GoogleFonts.ralewayTextTheme();
-var UBUNTU_FONT = GoogleFonts.ubuntuTextTheme();
-var KANIT_FONT = GoogleFonts.kanitTextTheme();
-var MULISH_FONT = GoogleFonts.mulishTextTheme();
-var JOSEFIN_FONT = GoogleFonts.josefinSansTextTheme();
-var JOST_FONT = GoogleFonts.jostTextTheme();
+// var RAILEWAY_FONT = GoogleFonts.ralewayTextTheme();
+// var UBUNTU_FONT = GoogleFonts.ubuntuTextTheme();
+// var KANIT_FONT = GoogleFonts.kanitTextTheme();
+// var MULISH_FONT = GoogleFonts.mulishTextTheme();
+// var JOSEFIN_FONT = GoogleFonts.josefinSansTextTheme();
+// var JOST_FONT = GoogleFonts.jostTextTheme();
 var CABIN_FONT = GoogleFonts.cabinTextTheme();
 
 var MAIN_TEXT_THEME = CABIN_FONT;
